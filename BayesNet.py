@@ -1,6 +1,6 @@
 # Bayes Net Implementation
 # ________________________
-# @author Nathan Pucheril www.pucher.il
+# @author Nathan Pucheril 
 # @author Keith Hardaway
 
 import networkx
