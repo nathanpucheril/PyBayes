@@ -12,7 +12,7 @@ from abc import ABC, abstractmethod, ABCMeta
 
 from warnings import warn
 
-from utils import OrderedMultiDict
+# from utils import UnorderedMultiDict
 
 
 class BayesNet(object):
@@ -125,26 +125,32 @@ class Factor(object):
         self._variables = set(conditioned_vars) | set(unconditioned_vars)
         self._unconditioned = unconditioned_vars
         self._conditioned = conditioned_vars
-        self.__entrees = product(*variable_domains.values())
-        self._table = {entree: 3 for entree in entrees}
+        entree_temp = [[(var, domain) for domain in self._domains[var]] for var in self._variables]
+        self._entrees = list(sorted([element for element in product(*entree_temp)]))
+        self._table = {}
+        for entree in self._entrees:
+            self._table[entree] = 0
+        warn("Probabilities not set. Default = 0")
 
-    def getProbability(self, variables):
-        if hasattr(variables, __iter__):
-            count_vars = Counter(variables)
-            to_sum = [entree for entree in self.__entrees if Counter(entree) == count_vars]
-            return sum(self._table[entree] for entree in to_sum)
-
+    def get_probability(self, **variables):
+        variables = variables.items()
+        if hasattr(variables, "__iter__"):
+            to_sum = [entree for entree in self._entrees if set(entree) == set(variables)]
+            if len(to_sum) != 1:
+                raise UserWarning("Error in retrieving probability. Invalid method call.")
+            return self._table[entree[0]]
         raise UserWarning("Error in retrieving probability. Invalid method call.")
         return 0
 
-    def setProbability(self, variables, val):
+    def set_probability(self, val, **variables):
         assert set(variables) ^ set(self._variables) == set(), "Variables for assignment not Valid for JPT"
-        count_vars = Counter(variables)
-        entrees = [entree for entree in self.__entrees if count_vars == Counter(entree)]
-        if len(entrees) > 0:
+        variables = variables.items()
+        entrees = [entree for entree in self._entrees if set(entree) | set(variables) == set(entree)]
+        if len(entrees) > 1:
             print("ERROR IN SET PROBABILITY JPT")
-        entree = entrees[0]
-        self._table[entree] = val
+        else:
+            entree = entrees[0]
+            self._table[entree] = val
 
 
     def __str__(self):
@@ -162,61 +168,47 @@ class Factor(object):
 class JPT(Factor):
 
     def __init__(self, variables, variable_domains):
-        self._domains = variable_domains
-        self._all_variables = variable_domains.keys()
-        self._variables = set(variables)
-
-        entree_temp = [[(var, domain) for domain in self._domains[var]] for var in self._variables]
-        self.__entrees = list([element for element in product(*a)])
-        # print(self.__entrees)
-        self._table = OrderedMultiDict()
+        super().__init__(variables, set(), variable_domains)
 
 
     def getEntrees(self):
-        return self.__entrees
+        return self._entrees
 
-    def getProbability(self, variables):
-        if isinstance(variables, str):
-            var = variables
-            to_sum = [entree for entree in self.__entrees if var in entree]
+    def get_probability(self, **variables):
+        variables = variables.items()
+        if len(variables) == 1:
+            var = tuple(list(variables)[0])
+            to_sum = [entree for entree in self._entrees if var in entree]
             return sum(self._table[entree] for entree in to_sum)
             # SUmm out
-        if hasattr(variables, __iter__):
-            count_vars = Counter(variables)
-            to_sum = [entree for entree in self.__entrees if Counter(entree) == count_vars]
+        if hasattr(variables, "__iter__"):
+            to_sum = [entree for entree in self._entrees if set(entree) | set(variables) == set(entree)]
             return sum(self._table[entree] for entree in to_sum)
         raise UserWarning("Error in retrieving probability. Invalid method call.")
         return 0
 
-    def setProbability(self, variables, val):
-        print(variables)
-        print(self._variables)
+    def set_probability(self, val, **variables):
         assert set(variables) ^ set(self._variables) == set(), "Variables for assignment not Valid for JPT"
-        count_vars = Counter(variables)
-        entrees = [entree for entree in self.__entrees if count_vars == Counter(entree)]
-        if len(entrees) > 0:
+        variables = variables.items()
+        entrees = [entree for entree in self._entrees if set(entree) | set(variables) == set(entree)]
+        if len(entrees) > 1:
             print("ERROR IN SET PROBABILITY JPT")
-        entree = entrees[0]
-        self._table[entree] = val
+        else:
+            entree = entrees[0]
+            self._table[entree] = val
 
     def __str__(self):
-        longest_var = max(map(len,self._all_variables))
+        longest_var = max(map(len,self._variables))
         def str_helper(s): return str(s).rjust(longest_var, " ").ljust(longest_var, " ")
         header = "P({vars})".format(vars=", ".join(self._variables))
-        lst_of_entrees = [" | ".join(map(str_helper, k)) + " | " + str(v) for k, v in sorted(self._cpt.items())]
+        lst_of_entrees = [" | ".join(map(str_helper, k)) + " | " + str(v) for k, v in sorted(self._table.items())]
         table = "\n".join(lst_of_entrees)
         cpt_str = "{header}\n{rule}\n{table}".format(table=table, header=header, rule="-" * len(header))
         return cpt_str
 
 class CPT(Factor):
     def __init__(self, unconditioned_var, conditioned_vars, variable_domains):
-        self._domains = variable_domains
-        self._variables = set(conditioned_vars) | set(unconditioned_var)
-        self._unconditioned = unconditioned_var
-        self._conditioned = conditioned_vars
-        entrees = product(*variable_domains.values())
-        self._cpt = {entree: 3 for entree in entrees}
-
+        super().__init__(unconditioned_var, conditioned_vars, variable_domains)
 
     def __str__(self):
         longest_var = max(map(len,self._variables))
@@ -237,6 +229,11 @@ variables = variableDomains.keys()
 # b = BayesNet([("weather", "forecast")], variables, variableDomains)
 jpt = JPT(variables, variableDomains)
 entrees = jpt.getEntrees()
+# print("\n".join(map(str, entrees)))
+print(jpt.get_probability(weather = "sun", forecast = "good"))
+print(jpt.set_probability(41, weather = "sun", forecast = "good"))
+print(jpt.get_probability(weather = "sun", forecast = "good"))
+print(jpt)
 # print(entrees)
 # # print(list(entrees))
 # for entree in list(entrees):
