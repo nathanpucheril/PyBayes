@@ -28,7 +28,7 @@ class Factor(object):
             to_sum = [entree for entree in self._entrees if set(entree) == set(variables)]
             if len(to_sum) != 1:
                 raise UserWarning("Error in retrieving probability. Invalid method call.")
-            return self._table[entree[0]]
+            return self._table[to_sum[0]]
         raise UserWarning("Error in retrieving probability. Invalid method call.")
         return 0
 
@@ -60,30 +60,15 @@ class JPT(Factor):
     def __init__(self, variables, variable_domains):
         super().__init__(variables, set(), variable_domains)
 
-
-
     def get_probability(self, **variables):
-        variables = variables.items()
+        # variables = variables.items()
         if len(variables) == 1:
-            var = tuple(list(variables)[0])
+            var = tuple(list(variables.items())[0])
             to_sum = [entree for entree in self._entrees if var in entree]
             return sum(self._table[entree] for entree in to_sum)
-            # SUmm out
-        if hasattr(variables, "__iter__"):
-            to_sum = [entree for entree in self._entrees if set(entree) | set(variables) == set(entree)]
-            return sum(self._table[entree] for entree in to_sum)
-        raise UserWarning("Error in retrieving probability. Invalid method call.")
-        return 0
+        return Factor.get_probability(self, **variables)
 
-    def set_probability(self, val, **variables):
-        assert set(variables) ^ set(self._variables) == set(), "Variables for assignment not Valid for JPT"
-        variables = variables.items()
-        entrees = [entree for entree in self._entrees if set(entree) | set(variables) == set(entree)]
-        if len(entrees) > 1:
-            print("ERROR IN SET PROBABILITY JPT")
-        else:
-            entree = entrees[0]
-            self._table[entree] = val
+
 
     def __str__(self):
         longest_var = max(map(len,self._variables))

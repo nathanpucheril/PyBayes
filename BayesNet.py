@@ -6,7 +6,6 @@
 import networkx as nx
 
 from copy import deepcopy, copy
-# from abc import ABC, abstractmethod, ABCMeta
 
 from ProbabilityTable import *
 # from utils import Unorder edMultiDict
@@ -126,8 +125,10 @@ entrees = jpt.getEntrees()
 # print("\n".join(map(str, entrees)))
 print(jpt.get_probability(weather = "sun", forecast = "good"))
 print(jpt.set_probability(41, weather = "sun", forecast = "good"))
+print(jpt.set_probability(42, weather = "sun", forecast = "bad"))
 print(jpt.get_probability(weather = "sun", forecast = "good"))
 print(jpt)
+print(jpt.get_probability(weather = "sun"))
 # print(entrees)
 # # print(list(entrees))
 # for entree in list(entrees):
