@@ -5,12 +5,14 @@
 
 import networkx as nx
 
-from itertools import product
+from itertools import product, combinations
 from collections import Counter
 from copy import deepcopy, copy
 from abc import ABC, abstractmethod, ABCMeta
 
-import warnings
+from warnings import warn
+
+from utils import OrderedMultiDict
 
 
 class BayesNet(object):
@@ -58,6 +60,7 @@ class BayesNet(object):
     def __str__(self):
         cpt_str = ""
         LJUSTVAL = 10
+        domain_str = '\n\t\t'.join(["{k} :: {v}".format(k=k.ljust(LJUSTVAL, " "), v=v) for k, v in self._variable_domains.items()])
         net_str = ("*{title} {class_}*\n"
                    "Variables: {variables}\n"
                    "Variable Domains:\n\t\t{domains}\n"
@@ -65,19 +68,18 @@ class BayesNet(object):
                    ).format(title = self._title,
                             class_ = self.__class__, \
                             variables = "; ".join(map(str, self._variables)),
-                            domains = '\n\t\t'.join(["{k} :: {v}".format(k=k.ljust(LJUSTVAL, " "), v=v) for k, v in self._variable_domains.items()]),
-                            cpt_str = cpt_str,
+                            domains = domain_str,
                             border = "*" * 80)
 
         return net_str
 
     def loadable_string(self):
         return "{edges}\n{vars}\n{domains}\n{tables}\n{title}".format(
-        edges = self._edges
-        vars = self._variables
-        domains = self._variable_domains
-        tables = self._tables
-        title = self._title
+        edges = self._edges,
+        vars = self._variables,
+        domains = self._variable_domains,
+        tables = self._tables,
+        title = self._title,
         )
     def visual_graph(self):
         import matplotlib.pyplot as plt
@@ -90,7 +92,7 @@ class BayesNet(object):
 
     @staticmethod
     def load_bayes_net(bayes_str):
-        pass
+        return BayesNet(None, None, None, None)
 #     def save_graph(self):
 #         nx.draw(G)
 # >>> plt.savefig("path.png")
@@ -163,8 +165,12 @@ class JPT(Factor):
         self._domains = variable_domains
         self._all_variables = variable_domains.keys()
         self._variables = set(variables)
-        self.__entrees = list(product(*variable_domains.values()))
-        self._table = {entree: 3 for entree in self.__entrees}
+
+        entree_temp = [[(var, domain) for domain in self._domains[var]] for var in self._variables]
+        self.__entrees = list([element for element in product(*a)])
+        # print(self.__entrees)
+        self._table = OrderedMultiDict()
+
 
     def getEntrees(self):
         return self.__entrees
@@ -232,6 +238,6 @@ variables = variableDomains.keys()
 jpt = JPT(variables, variableDomains)
 entrees = jpt.getEntrees()
 # print(entrees)
-# print(list(entrees))
-for entree in list(entrees):
-    jpt.setProbability(entrees, .1)
+# # print(list(entrees))
+# for entree in list(entrees):
+#     jpt.setProbability(entrees, .1)
