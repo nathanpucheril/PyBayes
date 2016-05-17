@@ -157,7 +157,7 @@ class Factor(object):
         longest_var = max(map(len,self._variables))
         def str_helper(s): return str(s).rjust(longest_var, " ").ljust(longest_var, " ")
         header = "P({unc}{given}{cond})".format(unc=", ".join(self._unconditioned),
-                                            given=" | ",
+                                            given=" | " if self._conditioned else "",
                                             cond=", ".join(self._conditioned))
         lst_of_entrees = [" | ".join(map(str_helper, k)) + " | " + str(v) for k, v in sorted(self._cpt.items())]
         table = "\n".join(lst_of_entrees)
@@ -200,11 +200,19 @@ class JPT(Factor):
     def __str__(self):
         longest_var = max(map(len,self._variables))
         def str_helper(s): return str(s).rjust(longest_var, " ").ljust(longest_var, " ")
+        # print("\n".join(map(str,self._table.items())))
         header = "P({vars})".format(vars=", ".join(self._variables))
-        lst_of_entrees = [" | ".join(map(str_helper, k)) + " | " + str(v) for k, v in sorted(self._table.items())]
+        var_header = "{vars}".format(vars=" | ".join(self._variables))
+        k,v = sorted(self._table.items())[0]
+        print(k, "first")
+        print(list())
+        lst_of_entrees = [" | ".join(map(str_helper, map(lambda x: x[1], k))) + " | " + str(v) for k, v in sorted(self._table.items())]
         table = "\n".join(lst_of_entrees)
-        cpt_str = "{header}\n{rule}\n{table}".format(table=table, header=header, rule="-" * len(header))
-        return cpt_str
+        return "{header}\n{rule}\n{var_header}\n{table}".format(table=table,
+                                                                header=header,
+                                                                var_header = var_header,
+                                                                rule="-" * len(header))
+
 
 class CPT(Factor):
     def __init__(self, unconditioned_var, conditioned_vars, variable_domains):
