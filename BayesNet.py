@@ -7,6 +7,7 @@
 from copy import deepcopy, copy
 import networkx as nx
 from ProbabilityTable import *
+from warnings import warn
 
 class BayesNet(object):
     """ Bayes Net Implementation
@@ -29,9 +30,9 @@ class BayesNet(object):
         assert isinstance(self._cpts, dict), "Probability Tables must be a Dictionary of CPTS"
         assert all([isinstance(table, CPT) for table in self._cpts]), "Tables must be of type CPT"
         if self._cpts == {}:
-            warnings.warn("Probability Tables Undefined")
-        elif set(self._cpts.keys()) - set(self._variables) == set():
-            warnings.warn("Not all Probability Tables Defined")
+            warn("Probability Tables Undefined")
+        elif set(self._cpts.keys()) != set(self._variables):
+            warn("Not all Probability Tables Defined")
 
     @property
     def variables(self):
@@ -120,8 +121,8 @@ class BayesNet(object):
         plt.savefig("{filepath}{ext}".format(filepath = filepath,
                     ext = "" if filepath.endswith(".png") else ".png"))
 
-
 class DecisionNetwork(BayesNet):
+
     def get_utility():
         pass
 
