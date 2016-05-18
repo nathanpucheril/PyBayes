@@ -1,7 +1,7 @@
 # Probability Tables Implementation
 # ________________________
 # @author Nathan Pucheril
-# @author Keith Hardaway
+# #author Keith Hardaway
 
 from itertools import product, combinations
 from copy import deepcopy, copy
@@ -84,4 +84,4 @@ class JPT(Factor):
 
 class CPT(Factor):
     def __init__(self, unconditioned_var, conditioned_vars, variable_domains):
-        super().__init__(unconditioned_var, conditioned_vars, variable_domains)
+        super().__init__(list(unconditioned_var), conditioned_vars, variable_domains)

@@ -1,7 +1,6 @@
 # Bayes Net Implementation
 # ________________________
 # @author Nathan Pucheril
-# @author Keith Hardaway
 
 import networkx as nx
 
@@ -134,17 +133,17 @@ def HMMConstructor():
 def DecisionNetworkConstructor():
     pass
 
-# variableDomains = {"weather": ["sun", "rain"], "forecast": ["good", "bad"]}
-# variables = list(variableDomains.keys())
-# # b = BayesNet([("weather", "forecast")], variables, variableDomains)
-# JPT = JPT([variables[0],variables[1]], variableDomains)
-# entrees = JPT.get_entrees()
-# # print("\n".join(map(str, entrees)))
-# (JPT.set_probability(.5, weather = "sun", forecast = "good"))
-# (JPT.set_probability(.5, weather = "sun", forecast = "bad"))
-# print(JPT)
-# print(JPT.valid_table())
-# # print(entrees)
-# # # print(list(entrees))
-# # for entree in list(entrees):
-# #     jpt.setProbability(entrees, .1)
+variableDomains = {"weather": ["sun", "rain"], "forecast": ["good", "bad"]}
+variables = list(variableDomains.keys())
+# b = BayesNet([("weather", "forecast")], variables, variableDomains)
+JPT = JPT([variables[0],variables[1]], variableDomains)
+entrees = JPT.get_entrees()
+# print("\n".join(map(str, entrees)))
+(JPT.set_probability(.5, weather = "sun", forecast = "good"))
+(JPT.set_probability(.5, weather = "sun", forecast = "bad"))
+print(JPT)
+print(JPT.valid_table())
+# print(entrees)
+# # print(list(entrees))
+# for entree in list(entrees):
+#     jpt.setProbability(entrees, .1)
