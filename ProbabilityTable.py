@@ -43,6 +43,10 @@ class Factor(object):
             entree = entrees[0]
             self._table[entree] = val
 
+    @staticmethod
+    def cpts2jpt(cpts):
+        pass
+
 
     def __str__(self):
         longest_var = max(map(len,self._variables))
@@ -60,7 +64,6 @@ class Factor(object):
 
     def loadable_string(self):
         pass
-
 
 class JPT(Factor):
 

@@ -11,7 +11,11 @@ from ProbabilityTable import *
 
 
 class BayesNet(object):
-    """docstring for """
+    """ Bayes Net Implementation
+
+        Usage:
+            -
+    """
     def __init__(self, edges, variables, domains, probability_tables={}, title="Bayes Net"):
         self._edges = edges
         self._variables = variables
@@ -108,11 +112,27 @@ class BayesNet(object):
 
 
 class DecisionNetwork(BayesNet):
+    def get_utility():
+        pass
+    def VPI():
+        pass
+
+class HMM(BayesNet):
+    def time_elapse(self):
+        pass
+    def observe(self):
+        pass
+
+
+
+def BayesNetConstructor():
     pass
 
+def HMMConstructor():
+    pass
 
-
-
+def DecisionNetworkConstructor():
+    pass
 
 # variableDomains = {"weather": ["sun", "rain"], "forecast": ["good", "bad"]}
 # variables = list(variableDomains.keys())
