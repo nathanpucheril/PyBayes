@@ -121,6 +121,7 @@ class BayesNet(object):
         plt.savefig("{filepath}{ext}".format(filepath = filepath,
                     ext = "" if filepath.endswith(".png") else ".png"))
 
+
 class DecisionNetwork(BayesNet):
     def get_utility():
         pass
