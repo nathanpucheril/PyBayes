@@ -1,7 +1,7 @@
 # Probability Tables Implementation
 # ________________________
 # @author Nathan Pucheril
-# #author Keith Hardaway
+# @author Keith Hardaway
 
 from itertools import product, combinations
 from copy import deepcopy, copy
