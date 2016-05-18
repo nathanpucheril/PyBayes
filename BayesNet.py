@@ -3,10 +3,9 @@
 # @author Nathan Pucheril
 # @author Keith Hardaway
 
-import networkx as nx
 
 from copy import deepcopy, copy
-
+import networkx as nx
 from ProbabilityTable import *
 
 class BayesNet(object):
@@ -61,7 +60,6 @@ class BayesNet(object):
         """ Sets probability table of a particular variable"""
         assert isinstance(cpt, CPT), "Bayes Net use Conditional Probability Tables"
         self._tables[variable] = cpt
-
 
     def __eq__(self, object2):
         """ Checks for Bayes Net Equality. Not CPT Equality!"""
@@ -125,12 +123,14 @@ class BayesNet(object):
 class DecisionNetwork(BayesNet):
     def get_utility():
         pass
+
     def VPI():
         pass
 
 class HMM(BayesNet):
     def time_elapse(self):
         pass
+
     def observe(self):
         pass
 
