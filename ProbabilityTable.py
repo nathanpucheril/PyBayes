@@ -21,24 +21,22 @@ class Factor(object):
         self._variables = set(conditioned_vars) | set(unconditioned_vars)
         self._unconditioned = unconditioned_vars
         self._conditioned = conditioned_vars
-        entree_temp = [[(var, domain) for domain in self._domains[var]] for var in self._variables]
-        print(entree_temp)
-        self._entrees = list(sorted(product(*entree_temp)))
-        print(self._entrees)
+        entry_temp = [[(var, domain) for domain in self._domains[var]] for var in self._variables]
+        self._entrys = list(sorted(product(*entry_temp)))
         self._table = {}
-        for entree in self._entrees:
-            self._table[entree] = 0
+        for entry in self._entrys:
+            self._table[entry] = 0
         warn("Probabilities not set. Default = 0")
 
-    def get_entrees(self):
-        """ Retrieves all possible entrees to the table"""
-        return self._entrees
+    def get_entrys(self):
+        """ Retrieves all possible entrys to the table"""
+        return self._entrys
 
     def get_probability(self, **variables):
-        """ Gets probability of a specific entree in table"""
+        """ Gets probability of a specific entry in table"""
         variables = variables.items()
         if hasattr(variables, "__iter__"):
-            to_sum = [entree for entree in self._entrees if set(entree) == set(variables)]
+            to_sum = [entry for entry in self._entrys if set(entry) == set(variables)]
             if len(to_sum) != 1:
                 raise UserWarning("Error in retrieving probability. Invalid method call.")
             return self._table[to_sum[0]]
@@ -46,15 +44,15 @@ class Factor(object):
         return 0
 
     def set_probability(self, val, **variables):
-        """ Sets probability of a specific entree in table"""
+        """ Sets probability of a specific entry in table"""
         assert set(variables) ^ set(self._variables) == set(), "Variables for assignment not Valid for JPT"
         variables = variables.items()
-        entrees = [entree for entree in self._entrees if set(entree) | set(variables) == set(entree)]
-        if len(entrees) > 1:
+        entrys = [entry for entry in self._entrys if set(entry) | set(variables) == set(entry)]
+        if len(entrys) > 1:
             print("ERROR IN SET PROBABILITY JPT")
         else:
-            entree = entrees[0]
-            self._table[entree] = val
+            entry = entrys[0]
+            self._table[entry] = val
 
 
     def __str__(self):
@@ -65,8 +63,8 @@ class Factor(object):
                                             given=" | " if self._conditioned else "",
                                             cond=", ".join(self._conditioned))
         var_header = str_helper("{vars}".format(vars=" | ".join(self._variables)))
-        lst_of_entrees = [" | ".join(map(str_helper, map(lambda x: x[1], k))) + " | " + str(v) for k, v in sorted(self._table.items())]
-        table = "\n".join(lst_of_entrees)
+        lst_of_entrys = [" | ".join(map(str_helper, map(lambda x: x[1], k))) + " | " + str(v) for k, v in sorted(self._table.items())]
+        table = "\n".join(lst_of_entrys)
         return "{header}\n{rule}\n{var_header}\n{table}".format(table=table, header=header, var_header = var_header, rule="-" * len(header))
 
     def load_factor(self, string):
@@ -83,16 +81,16 @@ class JPT(Factor):
 
     def valid_table(self):
         """Checks if Probability Rules are followed"""
-        assert sum(self._table[entree] for entree in self.get_entrees()) == 1, "JPT does not sum to 1"
-        return True if sum(self._table[entree] for entree in self.get_entrees()) == 1 else False
+        assert sum(self._table[entry] for entry in self.get_entrys()) == 1, "JPT does not sum to 1"
+        return True if sum(self._table[entry] for entry in self.get_entrys()) == 1 else False
 
     def get_probability(self, **variables):
         """ Gets probability of certain variables. Includes summing out over vars"""
         # variables = variables.items()
         if len(variables) == 1:
             var = tuple(list(variables.items())[0])
-            to_sum = [entree for entree in self._entrees if var in entree]
-            return sum(self._table[entree] for entree in to_sum)
+            to_sum = [entry for entry in self._entrys if var in entry]
+            return sum(self._table[entry] for entry in to_sum)
         return super().get_probability(**variables)
 
 class CPT(Factor):
