@@ -15,6 +15,9 @@ class BayesNet(object):
 
         Usage:
             -
+            -
+            -
+            -
     """
     def __init__(self, edges, variables, domains, probability_tables={}, title="Bayes Net"):
         self._edges = edges
@@ -25,7 +28,7 @@ class BayesNet(object):
         self._jpt = None
 
         assert all([(u in variables and v in variables) for u, v in edges]),"h"
-        assert isinstance(self._cpts, dict), "Probability Tables must be a Dictionary"
+        assert isinstance(self._cpts, dict), "Probability Tables must be a Dictionary of CPTS"
         assert all([isinstance(table, CPT) for table in self._cpts]), "Tables must be of type CPT"
         if self._cpts == {}:
             warnings.warn("Probability Tables Undefined")
@@ -37,7 +40,7 @@ class BayesNet(object):
         return copy(self._variables)
 
     @property
-    def variableDomains(self):
+    def variable_domains(self):
         return deepcopy(self._variable_domains)
 
     @property
@@ -51,23 +54,27 @@ class BayesNet(object):
         return self._jpt
 
     def get_cpt(self, variable):
+        """ Gets probability table of a particular variable"""
         return self._tables[variable]
 
     def set_cpt(self, variable, cpt):
+        """ Sets probability table of a particular variable"""
         assert isinstance(cpt, CPT), "Bayes Net use Conditional Probability Tables"
         self._tables[variable] = cpt
 
 
-
     def __eq__(self, object2):
+        """ Checks for Bayes Net Equality. Not CPT Equality!"""
         return self.variables == object2.variables and  \
             self.variableDomains == object2.variableDomains and \
             self.cpts == object2.cpts
 
     def __ne__(self, object2):
+        """ Checks for non-equality"""
         return not self.__eq__(object2)
 
     def __str__(self):
+        """Human readable Bayes Net String """
         cpt_str = ""
         LJUSTVAL = 10
         domain_str = '\n\t\t'.join(["{k} :: {v}".format(k=k.ljust(LJUSTVAL, " "), v=v) for k, v in self._variable_domains.items()])
@@ -84,15 +91,17 @@ class BayesNet(object):
         return net_str
 
     def loadable_string(self):
+        """ String for loading a bayes net"""
         return "{edges}\n{vars}\n{domains}\n{tables}\n{title}".format(
-        edges = self._edges,
-        vars = self._variables,
-        domains = self._variable_domains,
-        tables = self._tables,
-        title = self._title,
-        )
+                edges = self._edges,
+                vars = self._variables,
+                domains = self._variable_domains,
+                tables = self._tables,
+                title = self._title,
+                )
 
     def visual_graph(self):
+        """ Network x image of Bayes Net with Directed Edges"""
         import matplotlib.pyplot as plt
         net = nx.DiGraph()
         # print("h")
@@ -103,6 +112,9 @@ class BayesNet(object):
 
     @staticmethod
     def load_bayes_net(bayes_str):
+        """ Loads BayesNet from Bayes Net Loadable String.
+            See method loadable_string(self)
+        """
         return BayesNet(None, None, None, None)
 
 #     def save_graph(self):
@@ -133,18 +145,3 @@ def HMMConstructor():
 
 def DecisionNetworkConstructor():
     pass
-
-variableDomains = {"weather": ["sun", "rain"], "forecast": ["good", "bad"]}
-variables = list(variableDomains.keys())
-# b = BayesNet([("weather", "forecast")], variables, variableDomains)
-JPT = JPT([variables[0],variables[1]], variableDomains)
-entrees = JPT.get_entrees()
-# print("\n".join(map(str, entrees)))
-(JPT.set_probability(.5, weather = "sun", forecast = "good"))
-(JPT.set_probability(.5, weather = "sun", forecast = "bad"))
-print(JPT)
-print(JPT.valid_table())
-# print(entrees)
-# # print(list(entrees))
-# for entree in list(entrees):
-#     jpt.setProbability(entrees, .1)

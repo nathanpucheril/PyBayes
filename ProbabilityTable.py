@@ -8,7 +8,15 @@ from copy import deepcopy, copy
 from warnings import warn
 
 class Factor(object):
+    """ Description:
+        Usage:
+            -
+            -
+            -
+    """
+
     def __init__(self, unconditioned_vars, conditioned_vars, variable_domains):
+        """ Creates a Factor object that encodes probabilities in a table"""
         self._domains = variable_domains
         self._variables = set(conditioned_vars) | set(unconditioned_vars)
         self._unconditioned = unconditioned_vars
@@ -21,9 +29,11 @@ class Factor(object):
         warn("Probabilities not set. Default = 0")
 
     def get_entrees(self):
+        """ Retrieves all possible entrees to the table"""
         return self._entrees
 
     def get_probability(self, **variables):
+        """ Gets probability of a specific entree in table"""
         variables = variables.items()
         if hasattr(variables, "__iter__"):
             to_sum = [entree for entree in self._entrees if set(entree) == set(variables)]
@@ -34,6 +44,7 @@ class Factor(object):
         return 0
 
     def set_probability(self, val, **variables):
+        """ Sets probability of a specific entree in table"""
         assert set(variables) ^ set(self._variables) == set(), "Variables for assignment not Valid for JPT"
         variables = variables.items()
         entrees = [entree for entree in self._entrees if set(entree) | set(variables) == set(entree)]
@@ -43,12 +54,9 @@ class Factor(object):
             entree = entrees[0]
             self._table[entree] = val
 
-    @staticmethod
-    def cpts2jpt(cpts):
-        pass
-
 
     def __str__(self):
+        """ Returns human readable Probability Table"""
         longest_var = max(map(len,self._variables))
         def str_helper(s): return str(s).rjust(longest_var, " ").ljust(longest_var, " ")
         header = "P({unc}{given}{cond})".format(unc=", ".join(self._unconditioned),
@@ -68,13 +76,16 @@ class Factor(object):
 class JPT(Factor):
 
     def __init__(self, variables, variable_domains):
+        """Initializes a Joint Probability Table"""
         super().__init__(variables, set(), variable_domains)
 
     def valid_table(self):
+        """Checks if Probability Rules are followed"""
         assert sum(self._table[entree] for entree in self.get_entrees()) == 1, "JPT does not sum to 1"
         return True if sum(self._table[entree] for entree in self.get_entrees()) == 1 else False
 
     def get_probability(self, **variables):
+        """ Gets probability of certain variables. Includes summing out over vars"""
         # variables = variables.items()
         if len(variables) == 1:
             var = tuple(list(variables.items())[0])
@@ -85,3 +96,8 @@ class JPT(Factor):
 class CPT(Factor):
     def __init__(self, unconditioned_var, conditioned_vars, variable_domains):
         super().__init__(list(unconditioned_var), conditioned_vars, variable_domains)
+
+    @staticmethod
+    def cpts2jpt(cpts):
+        """Converts mutliple CPTs to JPT """
+        pass
