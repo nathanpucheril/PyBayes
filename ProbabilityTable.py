@@ -22,7 +22,7 @@ class Factor(object):
         self._unconditioned = unconditioned_vars
         self._conditioned = conditioned_vars
         entree_temp = [[(var, domain) for domain in self._domains[var]] for var in self._variables]
-        self._entrees = list(sorted([element for element in product(*entree_temp)]))
+        self._entrees = list(sorted(product(*entree_temp)))
         self._table = {}
         for entree in self._entrees:
             self._table[entree] = 0
