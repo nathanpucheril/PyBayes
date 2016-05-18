@@ -9,7 +9,6 @@ from copy import deepcopy, copy
 
 from ProbabilityTable import *
 
-
 class BayesNet(object):
     """ Bayes Net Implementation
 
@@ -48,6 +47,7 @@ class BayesNet(object):
         return self._cpts
 
     def get_jpt(self):
+        """ If conditionals are all defined, returns a Joint over all of them"""
         if self._jpt:
             return self._jpt
         self._jpt = Factor.cpts2jpt(self._cpts)
@@ -117,11 +117,10 @@ class BayesNet(object):
         """
         return BayesNet(None, None, None, None)
 
-#     def save_graph(self):
-#         nx.draw(G)
-# >>> plt.savefig("path.png")
-
-
+    def save_graph(self, filepath):
+        nx.draw(G)
+        plt.savefig("{filepath}{ext}".format(filepath = filepath,
+                    ext = "" if filepath.endswith(".png") else ".png"))
 
 class DecisionNetwork(BayesNet):
     def get_utility():
