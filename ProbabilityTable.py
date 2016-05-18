@@ -55,6 +55,13 @@ class Factor(object):
         table = "\n".join(lst_of_entrees)
         return "{header}\n{rule}\n{var_header}\n{table}".format(table=table, header=header, var_header = var_header, rule="-" * len(header))
 
+    def load_factor(self, string):
+        pass
+
+    def loadable_string(self):
+        pass
+
+
 class JPT(Factor):
 
     def __init__(self, variables, variable_domains):

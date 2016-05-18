@@ -8,7 +8,6 @@ import networkx as nx
 from copy import deepcopy, copy
 
 from ProbabilityTable import *
-# from utils import Unorder edMultiDict
 
 
 class BayesNet(object):
@@ -17,16 +16,18 @@ class BayesNet(object):
         self._edges = edges
         self._variables = variables
         self._variable_domains = domains
-        self._tables = probability_tables
+        self._cpts = probability_tables
         self._title = title
+        self._jpt = None
 
         assert all([(u in variables and v in variables) for u, v in edges]),"h"
-        assert isinstance(self._tables, dict), "Probability Tables must be a Dictionary"
-        assert all([isinstance(table, Factor) for table in self._tables]), "Tables must be of type Factor"
-        if self._tables == {}:
+        assert isinstance(self._cpts, dict), "Probability Tables must be a Dictionary"
+        assert all([isinstance(table, CPT) for table in self._cpts]), "Tables must be of type CPT"
+        if self._cpts == {}:
             warnings.warn("Probability Tables Undefined")
-        elif set(self._tables.keys()) - set(self._variables) == set():
+        elif set(self._cpts.keys()) - set(self._variables) == set():
             warnings.warn("Not all Probability Tables Defined")
+
     @property
     def variables(self):
         return copy(self._variables)
@@ -36,14 +37,23 @@ class BayesNet(object):
         return deepcopy(self._variable_domains)
 
     @property
-    def tables(self):
-        return self._tables
+    def cpts(self):
+        return self._cpts
 
-    def getProbabilityTable(self, variable):
+    def get_jpt(self):
+        if self._jpt:
+            return self._jpt
+        self._jpt = Factor.cpts2jpt(self._cpts)
+        return self._jpt
+
+    def get_cpt(self, variable):
         return self._tables[variable]
 
-    def setProbabilityTable(self, variable, cpt):
-        pass
+    def set_cpt(self, variable, cpt):
+        assert isinstance(cpt, CPT), "Bayes Net use Conditional Probability Tables"
+        self._tables[variable] = cpt
+
+
 
     def __eq__(self, object2):
         return self.variables == object2.variables and  \
@@ -77,6 +87,7 @@ class BayesNet(object):
         tables = self._tables,
         title = self._title,
         )
+
     def visual_graph(self):
         import matplotlib.pyplot as plt
         net = nx.DiGraph()
@@ -89,9 +100,12 @@ class BayesNet(object):
     @staticmethod
     def load_bayes_net(bayes_str):
         return BayesNet(None, None, None, None)
+
 #     def save_graph(self):
 #         nx.draw(G)
 # >>> plt.savefig("path.png")
+
+
 
 class DecisionNetwork(BayesNet):
     pass
@@ -100,17 +114,17 @@ class DecisionNetwork(BayesNet):
 
 
 
-variableDomains = {"weather": ["sun", "rain"], "forecast": ["good", "bad"]}
-variables = list(variableDomains.keys())
-# b = BayesNet([("weather", "forecast")], variables, variableDomains)
-JPT = JPT([variables[0],variables[1]], variableDomains)
-entrees = JPT.get_entrees()
-# print("\n".join(map(str, entrees)))
-(JPT.set_probability(.5, weather = "sun", forecast = "good"))
-(JPT.set_probability(.5, weather = "sun", forecast = "bad"))
-print(JPT)
-print(JPT.valid_table())
-# print(entrees)
-# # print(list(entrees))
-# for entree in list(entrees):
-#     jpt.setProbability(entrees, .1)
+# variableDomains = {"weather": ["sun", "rain"], "forecast": ["good", "bad"]}
+# variables = list(variableDomains.keys())
+# # b = BayesNet([("weather", "forecast")], variables, variableDomains)
+# JPT = JPT([variables[0],variables[1]], variableDomains)
+# entrees = JPT.get_entrees()
+# # print("\n".join(map(str, entrees)))
+# (JPT.set_probability(.5, weather = "sun", forecast = "good"))
+# (JPT.set_probability(.5, weather = "sun", forecast = "bad"))
+# print(JPT)
+# print(JPT.valid_table())
+# # print(entrees)
+# # # print(list(entrees))
+# # for entree in list(entrees):
+# #     jpt.setProbability(entrees, .1)
