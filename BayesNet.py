@@ -96,39 +96,20 @@ class BayesNet(object):
 class DecisionNetwork(BayesNet):
     pass
 
-#
-# class AbstractProbabilityTable(metaclass=ABCMeta):
-#
-#     __metaclass__ = ABCMeta
-#
-#     @abstractmethod
-#     def __init__(self, variables, variable_domains):
-#         self._table = {}
-#         self._domains = variable_domains
-#         self._all_variables = variable_domains.keys()
-#         self._variables = variables
-#
-#     def getProbability(self, entree):
-#         return self._table[entree]
-#
-#     def setProbability(self, entree, val):
-#         self._table[entree] = val
-#
+
 
 
 
 variableDomains = {"weather": ["sun", "rain"], "forecast": ["good", "bad"]}
-variables = variableDomains.keys()
+variables = list(variableDomains.keys())
 # b = BayesNet([("weather", "forecast")], variables, variableDomains)
-jpt = JPT(variables, variableDomains)
-entrees = jpt.getEntrees()
+JPT = JPT([variables[0],variables[1]], variableDomains)
+entrees = JPT.get_entrees()
 # print("\n".join(map(str, entrees)))
-print(jpt.get_probability(weather = "sun", forecast = "good"))
-print(jpt.set_probability(41, weather = "sun", forecast = "good"))
-print(jpt.set_probability(42, weather = "sun", forecast = "bad"))
-print(jpt.get_probability(weather = "sun", forecast = "good"))
-print(jpt)
-print(jpt.get_probability(weather = "sun"))
+(JPT.set_probability(.5, weather = "sun", forecast = "good"))
+(JPT.set_probability(.5, weather = "sun", forecast = "bad"))
+print(JPT)
+print(JPT.valid_table())
 # print(entrees)
 # # print(list(entrees))
 # for entree in list(entrees):
