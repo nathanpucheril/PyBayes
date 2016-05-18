@@ -24,22 +24,22 @@ class Factor(object):
         entree_temp = [[(var, domain) for domain in self._domains[var]] for var in self._variables]
         self._entrees = list(sorted(product(*entree_temp)))
         self._table = {}
-        for entree in self._entrees:
-            self._table[entree] = 0
+        for entry in self._entrees:
+            self._table[entry] = 0
         warn("Probabilities not set. Default = 0")
 
     def get_domains(self):
         return deepcopy(self._domains)
 
     def get_entrees(self):
-        """ Retrieves all possible entrees to the table """
+        """ Retrieves all possible entries to the table """
         return self._entrees
 
     def get_probability(self, **variables):
-        """ Gets probability of a specific entree in table """
+        """ Gets probability of a specific entry in table """
         variables = variables.items()
         if hasattr(variables, "__iter__"):
-            to_sum = [entree for entree in self._entrees if set(entree) == set(variables)]
+            to_sum = [entry for entry in self._entrees if set(entry) == set(variables)]
             if len(to_sum) != 1:
                 raise UserWarning("Error in retrieving probability. Invalid method call.")
             return self._table[to_sum[0]]
@@ -47,15 +47,15 @@ class Factor(object):
         return 0
 
     def set_probability(self, val, **variables):
-        """ Sets probability of a specific entree in table """
+        """ Sets probability of a specific entry in table """
         assert set(variables) ^ set(self._variables) == set(), "Variables for assignment not Valid for JPT"
         variables = variables.items()
-        entrees = [entree for entree in self._entrees if set(entree) | set(variables) == set(entree)]
-        if len(entrees) > 1:
+        entries = [entry for entry in self._entrees if set(entry) | set(variables) == set(entry)]
+        if len(entries) > 1:
             print("ERROR IN SET PROBABILITY JPT")
         else:
-            entree = entrees[0]
-            self._table[entree] = val
+            entry = entries[0]
+            self._table[entry] = val
 
     def __str__(self):
         """ Returns human readable Probability Table """
@@ -80,7 +80,7 @@ class Factor(object):
                self._unconditioned == object2._unconditioned and \
                self._conditioned == object2._conditioned and \
                self._entrees == object2._entrees and \
-               all([self._table[entree] == object2._table[entree] for entree in self._entrees])
+               all([self._table[entry] == object2._table[entry] for entry in self._entrees])
 
     def load_factor(self, string):
         pass
@@ -98,15 +98,15 @@ class JPT(Factor):
 
     def valid_table(self):
         """Checks if Probability Rules are followed """
-        return True if sum(self._table[entree] for entree in self.get_entrees()) == 1 else False
+        return True if sum(self._table[entry] for entry in self.get_entrees()) == 1 else False
 
     def get_probability(self, **variables):
         """ Gets probability of certain variables. Includes summing out over vars """
         # variables = variables.items()
         if len(variables) == 1:
             var = tuple(list(variables.items())[0])
-            to_sum = [entree for entree in self._entrees if var in entree]
-            return sum(self._table[entree] for entree in to_sum)
+            to_sum = [entry for entry in self._entrees if var in entry]
+            return sum(self._table[entry] for entry in to_sum)
         return super().get_probability(**variables)
 
 class CPT(Factor):
@@ -121,13 +121,13 @@ class CPT(Factor):
             all_domains.update(cpt.get_domains())
         jpt = JPT(all_domains.keys(), all_domains)
         jpt_entrees = jpt.get_entrees()
-        for entree in jpt_entrees:
+        for entry in jpt_entrees:
             prob = 1
             for cpt in cpts:
                 for cpt_entree in cpt.get_entrees():
-                    if set(cpt_entree) | set(entree) == set(entree): # Union of CPT and JPT does not yield new Vars
-                        prob *= cpt.get_probability(**dict(cpt_entree)) #shouldnt have to put entree in dict
-            jpt.set_probability(prob, **dict(entree))#shouldnt have to put entree in dict
+                    if set(cpt_entree) | set(entry) == set(entry): # Union of CPT and JPT does not yield new Vars
+                        prob *= cpt.get_probability(**dict(cpt_entree)) #shouldnt have to put entry in dict
+            jpt.set_probability(prob, **dict(entry))#shouldnt have to put entry in dict
         return jpt
 
 def variable_elimination(elimination_var, factors):
@@ -139,19 +139,19 @@ var2 = ["mom", "dad"]
 dom2 = {"mom": ["scold", "praise"], "dad": ["scold", "praise"]}
 
 cpt1 = CPT("hi", "bye", dom1)
-entrees = cpt1.get_entrees()
-# print(entrees)
-for entree in entrees:
-    # print(dict(entree))
-    cpt1.set_probability(.2, **dict(entree))
+entries = cpt1.get_entrees()
+# print(entries)
+for entry in entries:
+    # print(dict(entry))
+    cpt1.set_probability(.2, **dict(entry))
 
 
 cpt2 = CPT("mom", "dad", dom2)
-entrees = cpt2.get_entrees()
-# print(entrees)
-for entree in entrees:
-    # print(dict(entree))
-    cpt2.set_probability(.1, **dict(entree))
+entries = cpt2.get_entrees()
+# print(entries)
+for entry in entries:
+    # print(dict(entry))
+    cpt2.set_probability(.1, **dict(entry))
 
 print(cpt1)
 print(cpt2)
