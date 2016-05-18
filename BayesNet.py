@@ -31,7 +31,7 @@ class BayesNet(object):
         assert all([isinstance(table, CPT) for table in self._cpts.values()]), "Tables must be of type CPT"
         if self._cpts == {}:
             warnings.warn("Probability Tables Undefined")
-        elif set(self._cpts.keys()) - set(self._variables) != set():
+        elif set(self._cpts.keys()) ^ set(self._variables) != set():
             warnings.warn("Not all Probability Tables Defined")
 
     @property
@@ -74,17 +74,18 @@ class BayesNet(object):
 
     def __str__(self):
         """Human readable Bayes Net String """
-        cpt_str = ""
-        LJUSTVAL = 10
-        domain_str = '\n\t\t'.join(["{k} :: {v}".format(k=k.ljust(LJUSTVAL, " "), v=v) for k, v in self._variable_domains.items()])
+        cpt_str = '\n\n'.join([str(cpt) for cpt in self._cpts.values()])
+        LJUSTVAL = 5
+        domain_str = '\n\t\t'.join(["{k} : {v}".format(k=k.ljust(LJUSTVAL, " "), v=v) for k, v in self._variable_domains.items()])
         net_str = ("*{title} {class_}*\n"
                    "Variables: {variables}\n"
                    "Variable Domains:\n\t\t{domains}\n"
-                   "CPTS: {cpt_str}\n{border}\n"
+                   "CPTS:\n{cpt_str}\n{border}\n"
                    ).format(title = self._title,
                             class_ = self.__class__, \
-                            variables = "; ".join(map(str, self._variables)),
-                            domains = domain_str,
+                            variables = ", ".join(map(str, self._variables)), \
+                            domains = domain_str, \
+                            cpt_str = cpt_str, \
                             border = "*" * 80)
 
         return net_str
