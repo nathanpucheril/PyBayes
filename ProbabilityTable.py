@@ -21,19 +21,21 @@ class Factor(object):
         self._variables = set(conditioned_vars) | set(unconditioned_vars)
         self._unconditioned = unconditioned_vars
         self._conditioned = conditioned_vars
-        entree_temp = [[(var, domain) for domain in self._domains[var]] for var in self._variables]
-        self._entries = list(sorted(product(*entree_temp)))
+        entry_temp = [[(var, domain) for domain in self._domains[var]] for var in self._variables]
+        self._entries = list(sorted(product(*entry_temp)))
         self._table = {}
         for entry in self._entries:
             self._table[entry] = 0
         warn("Probabilities not set. Default = 0")
 
+    def get_entries(self):
+        """ Retrieves all possible entries to the table"""
+        return self._entries
+
+    def get_probability(self, **variables):
+        """ Gets probability of a specific entry in table"""
     def get_domains(self):
         return deepcopy(self._domains)
-
-    def get_entrees(self):
-        """ Retrieves all possible entries to the table """
-        return self._entries
 
     def get_probability(self, **variables):
         """ Gets probability of a specific entry in table """
@@ -47,7 +49,7 @@ class Factor(object):
         return 0
 
     def set_probability(self, val, **variables):
-        """ Sets probability of a specific entry in table """
+        """ Sets probability of a specific entry in table"""
         assert set(variables) ^ set(self._variables) == set(), "Variables for assignment not Valid for JPT"
         variables = variables.items()
         entries = [entry for entry in self._entries if set(entry) | set(variables) == set(entry)]
@@ -56,6 +58,7 @@ class Factor(object):
         else:
             entry = entries[0]
             self._table[entry] = val
+
 
     def __str__(self):
         """ Returns human readable Probability Table """
@@ -89,7 +92,6 @@ class Factor(object):
         pass
 
 class JPT(Factor):
-
     def __init__(self, variables, variable_domains):
         """Initializes a Joint Probability Table """
         super().__init__(variables, set(), variable_domains)

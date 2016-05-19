@@ -81,11 +81,12 @@ class BayesNet(object):
         net_str = ("*{title} {class_}*\n"
                    "Variables: {variables}\n"
                    "Variable Domains:\n\t\t{domains}\n"
-                   "CPTS: {cpt_str}\n{border}\n"
+                   "CPTS:\n{cpt_str}\n{border}\n"
                    ).format(title = self._title,
                             class_ = self.__class__, \
-                            variables = "; ".join(map(str, self._variables)),
-                            domains = domain_str,
+                            variables = ", ".join(map(str, self._variables)), \
+                            domains = domain_str, \
+                            cpt_str = cpt_str, \
                             border = "*" * 80)
 
         return net_str
