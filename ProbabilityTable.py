@@ -37,13 +37,6 @@ class Factor(object):
     def get_domains(self):
         return deepcopy(self._domains)
 
-<<<<<<< HEAD
-=======
-    def get_entrees(self):
-        """ Retrieves all possible entries to the table """
-        return self._entries
-
->>>>>>> 8489bbefeafc998ee715c77d39584e9aba2b9e48
     def get_probability(self, **variables):
         """ Gets probability of a specific entry in table """
         variables = variables.items()
