@@ -22,9 +22,9 @@ class Factor(object):
         self._unconditioned = unconditioned_vars
         self._conditioned = conditioned_vars
         entree_temp = [[(var, domain) for domain in self._domains[var]] for var in self._variables]
-        self._entrees = list(sorted(product(*entree_temp)))
+        self._entries = list(sorted(product(*entree_temp)))
         self._table = {}
-        for entry in self._entrees:
+        for entry in self._entries:
             self._table[entry] = 0
         warn("Probabilities not set. Default = 0")
 
@@ -33,13 +33,13 @@ class Factor(object):
 
     def get_entrees(self):
         """ Retrieves all possible entries to the table """
-        return self._entrees
+        return self._entries
 
     def get_probability(self, **variables):
         """ Gets probability of a specific entry in table """
         variables = variables.items()
         if hasattr(variables, "__iter__"):
-            to_sum = [entry for entry in self._entrees if set(entry) == set(variables)]
+            to_sum = [entry for entry in self._entries if set(entry) == set(variables)]
             if len(to_sum) != 1:
                 raise UserWarning("Error in retrieving probability. Invalid method call.")
             return self._table[to_sum[0]]
@@ -50,7 +50,7 @@ class Factor(object):
         """ Sets probability of a specific entry in table """
         assert set(variables) ^ set(self._variables) == set(), "Variables for assignment not Valid for JPT"
         variables = variables.items()
-        entries = [entry for entry in self._entrees if set(entry) | set(variables) == set(entry)]
+        entries = [entry for entry in self._entries if set(entry) | set(variables) == set(entry)]
         if len(entries) > 1:
             print("ERROR IN SET PROBABILITY JPT")
         else:
@@ -79,8 +79,8 @@ class Factor(object):
         return type(self) == type(object2) and \
                self._unconditioned == object2._unconditioned and \
                self._conditioned == object2._conditioned and \
-               self._entrees == object2._entrees and \
-               all([self._table[entry] == object2._table[entry] for entry in self._entrees])
+               self._entries == object2._entries and \
+               all([self._table[entry] == object2._table[entry] for entry in self._entries])
 
     def load_factor(self, string):
         pass
@@ -105,7 +105,7 @@ class JPT(Factor):
         # variables = variables.items()
         if len(variables) == 1:
             var = tuple(list(variables.items())[0])
-            to_sum = [entry for entry in self._entrees if var in entry]
+            to_sum = [entry for entry in self._entries if var in entry]
             return sum(self._table[entry] for entry in to_sum)
         return super().get_probability(**variables)
 

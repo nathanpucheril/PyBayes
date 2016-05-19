@@ -26,7 +26,8 @@ class BayesNet(object):
         self._title = title
         self._jpt = None
 
-        assert all([(u in variables and v in variables) for u, v in edges]),"h"
+        assert all([(u in variables and v in variables) for u, v in edges]),"All vertices must be a variable"
+        assert set([*e for e in edges]) == set(variables), "The set of Variables and Vertices must be the same"
         assert isinstance(self._cpts, dict), "Probability Tables must be a Dictionary of CPTS"
         assert all([isinstance(table, CPT) for table in self._cpts.values()]), "Tables must be of type CPT"
         if self._cpts == {}:
@@ -44,7 +45,7 @@ class BayesNet(object):
 
     @property
     def cpts(self):
-        return self._cpts
+        return deepcopy(self._cpts)
 
     def get_jpt(self):
         """ If conditionals are all defined, returns a Joint over all of them"""
@@ -74,7 +75,7 @@ class BayesNet(object):
 
     def __str__(self):
         """Human readable Bayes Net String """
-        cpt_str = ""
+        cpt_str = "{cpts}".format(cpts="".join(map(str, self._cpts)))
         LJUSTVAL = 10
         domain_str = '\n\t\t'.join(["{k} :: {v}".format(k=k.ljust(LJUSTVAL, " "), v=v) for k, v in self._variable_domains.items()])
         net_str = ("*{title} {class_}*\n"
@@ -141,8 +142,11 @@ class HMM(BayesNet):
 
 
 
-def BayesNetConstructor():
-    pass
+def BayesNetConstructor(edges, domains, cpts = {}):
+    """
+        :param
+    """
+    variables = set([*e for e in edges])
 
 def HMMConstructor():
     pass
