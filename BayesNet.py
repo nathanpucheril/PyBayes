@@ -7,7 +7,11 @@
 from copy import deepcopy, copy
 import networkx as nx
 from ProbabilityTable import *
+<<<<<<< HEAD
 import warnings
+=======
+from warnings import warn
+>>>>>>> 8489bbefeafc998ee715c77d39584e9aba2b9e48
 
 class BayesNet(object):
     """ Bayes Net Implementation
@@ -26,13 +30,20 @@ class BayesNet(object):
         self._title = title
         self._jpt = None
 
-        assert all([(u in variables and v in variables) for u, v in edges]),"h"
+        assert all([(u in variables and v in variables) for u, v in edges]),"All vertices must be a variable"
+        assert set([*e for e in edges]) == set(variables), "The set of Variables and Vertices must be the same"
         assert isinstance(self._cpts, dict), "Probability Tables must be a Dictionary of CPTS"
         assert all([isinstance(table, CPT) for table in self._cpts.values()]), "Tables must be of type CPT"
         if self._cpts == {}:
+<<<<<<< HEAD
             warnings.warn("Probability Tables Undefined")
         elif set(self._cpts.keys()) ^ set(self._variables) != set():
             warnings.warn("Not all Probability Tables Defined")
+=======
+            warn("Probability Tables Undefined")
+        elif set(self._cpts.keys()) != set(self._variables):
+            warn("Not all Probability Tables Defined")
+>>>>>>> 8489bbefeafc998ee715c77d39584e9aba2b9e48
 
     @property
     def variables(self):
@@ -44,7 +55,7 @@ class BayesNet(object):
 
     @property
     def cpts(self):
-        return self._cpts
+        return deepcopy(self._cpts)
 
     def get_jpt(self):
         """ If conditionals are all defined, returns a Joint over all of them"""
@@ -74,9 +85,9 @@ class BayesNet(object):
 
     def __str__(self):
         """Human readable Bayes Net String """
-        cpt_str = '\n\n'.join([str(cpt) for cpt in self._cpts.values()])
-        LJUSTVAL = 5
-        domain_str = '\n\t\t'.join(["{k} : {v}".format(k=k.ljust(LJUSTVAL, " "), v=v) for k, v in self._variable_domains.items()])
+        cpt_str = "{cpts}".format(cpts="".join(map(str, self._cpts)))
+        LJUSTVAL = 10
+        domain_str = '\n\t\t'.join(["{k} :: {v}".format(k=k.ljust(LJUSTVAL, " "), v=v) for k, v in self._variable_domains.items()])
         net_str = ("*{title} {class_}*\n"
                    "Variables: {variables}\n"
                    "Variable Domains:\n\t\t{domains}\n"
@@ -122,8 +133,11 @@ class BayesNet(object):
         plt.savefig("{filepath}{ext}".format(filepath = filepath,
                     ext = "" if filepath.endswith(".png") else ".png"))
 
+    def is_valid(self):
+        pass
 
 class DecisionNetwork(BayesNet):
+
     def get_utility():
         pass
 
@@ -139,8 +153,11 @@ class HMM(BayesNet):
 
 
 
-def BayesNetConstructor():
-    pass
+def BayesNetConstructor(edges, domains, cpts = {}):
+    """
+        :param
+    """
+    variables = set([*e for e in edges])
 
 def HMMConstructor():
     pass
