@@ -27,7 +27,7 @@ class BayesNet(object):
         self._jpt = None
 
         assert all([(u in variables and v in variables) for u, v in edges]),"All vertices must be a variable"
-        assert set([v for v in e for e in edges ]) == set(variables), "The set of Variables and Vertices must be the same"
+        assert set([v for e in edges for v in e]) == set(variables), "The set of Variables and Vertices must be the same"
         assert isinstance(self._cpts, dict), "Probability Tables must be a Dictionary of CPTS"
         assert all([isinstance(table, CPT) for table in self._cpts.values()]), "Tables must be of type CPT"
         if self._cpts == {}:
@@ -146,7 +146,7 @@ def BayesNetConstructor(edges, domains, cpts = {}):
     """
         :param
     """
-    variables = set([v for v in e for e in edges ])
+    variables = set([v for v in e for e in edges])
 
 def HMMConstructor():
     pass
