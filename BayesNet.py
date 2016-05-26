@@ -29,7 +29,7 @@ class BayesNet(object):
         assert all([(u in variables and v in variables) for u, v in edges]),"All vertices must be a variable"
         assert set([v for e in edges for v in e]) == set(variables), "The set of Variables and Vertices must be the same"
         assert isinstance(self._cpts, dict), "Probability Tables must be a Dictionary of CPTS"
-        assert all([isinstance(table, CPT) for table in self._cpts.values()]), "Tables must be of type CPT"
+        assert all([isinstance(table, Factor) for table in self._cpts.values()]), "Tables must be of type CPT"
         if self._cpts == {}:
             warn("Probability Tables Undefined")
         elif set(self._cpts.keys()) != set(self._variables):
@@ -75,17 +75,18 @@ class BayesNet(object):
 
     def __str__(self):
         """Human readable Bayes Net String """
-        cpt_str = "{cpts}".format(cpts="".join(map(str, self._cpts)))
+        cpt_str = "\n".join([str(cpt) for cpt in self._cpts.values()])
         LJUSTVAL = 10
         domain_str = '\n\t\t'.join(["{k} :: {v}".format(k=k.ljust(LJUSTVAL, " "), v=v) for k, v in self._variable_domains.items()])
         net_str = ("*{title} {class_}*\n"
                    "Variables: {variables}\n"
                    "Variable Domains:\n\t\t{domains}\n"
-                   "CPTS: {cpt_str}\n{border}\n"
+                   "CPTS:\n{cpt_str}\n{border}\n"
                    ).format(title = self._title,
                             class_ = self.__class__, \
                             variables = "; ".join(map(str, self._variables)),
                             domains = domain_str,
+                            cpt_str = cpt_str,
                             border = "*" * 80)
 
         return net_str
@@ -146,7 +147,7 @@ def BayesNetConstructor(edges, domains, cpts = {}):
     """
         :param
     """
-    variables = set([v for v in e for e in edges])
+    variables = set([v for e in edges for v in e])
 
 def HMMConstructor():
     pass
