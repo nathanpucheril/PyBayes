@@ -149,9 +149,11 @@ for entry in entries:
 cpt2 = CPT("mom", "dad", dom2)
 entries = cpt2.get_entrees()
 # print(entries)
+count = .01
 for entry in entries:
     # print(dict(entry))
-    cpt2.set_probability(.1, **dict(entry))
+    cpt2.set_probability(.1 + count, **dict(entry))
+    count += .01
 
 print(cpt1)
 print(cpt2)
