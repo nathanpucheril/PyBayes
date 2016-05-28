@@ -112,7 +112,7 @@ class JPT(Factor):
 
 class CPT(Factor):
     def __init__(self, unconditioned_var, conditioned_vars, variable_domains):
-        super().__init__(list([unconditioned_var]), list([conditioned_vars]), variable_domains)
+        super().__init__(set([unconditioned_var]), set(conditioned_vars), variable_domains)
 
     @staticmethod
     def cpts2jpt(cpts):
@@ -145,7 +145,7 @@ dom1 = {"hi": ["friend", "parent"], "bye": ["friend", "parent"]}
 var2 = ["mom", "dad"]
 dom2 = {"mom": ["scold", "praise"], "dad": ["scold", "praise"]}
 
-cpt1 = CPT("hi", "bye", dom1)
+cpt1 = CPT("hi", ["bye"], dom1)
 entries = cpt1.get_entrees()
 # print(entries)
 for entry in entries:
@@ -153,7 +153,7 @@ for entry in entries:
     cpt1.set_probability(.2, **dict(entry))
 
 
-cpt2 = CPT("mom", "dad", dom2)
+cpt2 = CPT("mom", ["dad"], dom2)
 entries = cpt2.get_entrees()
 # print(entries)
 count = .01
