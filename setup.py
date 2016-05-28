@@ -29,7 +29,7 @@ VERSION = '0.0.1'
 setup(
     name = "PyBayes",
     version = VERSION,
-    author = "Nathan Pucheril & Keith Hardaway",
+    author = "Nathan Pucheril,Keith Hardaway",
     author_email = 'nathanpucheril@gmail.com | keithhardaway1@gmail.com',
     description = ("simple BayesNet Modeler"),
     license = "Apache",

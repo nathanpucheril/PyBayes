@@ -1,0 +1,14 @@
+Metadata-Version: 1.1
+Name: PyBayes
+Version: 0.0.1
+Summary: simple BayesNet Modeler
+Home-page: https://github.com/nathanpucheril/PyBayes
+Author: Nathan Pucheril,Keith Hardaway
+Author-email: nathanpucheril@gmail.com | keithhardaway1@gmail.com
+License: Apache
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Topic :: Utilities
+Classifier: Intended Audience :: Data Scientists
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Software Development :: Libraries
