@@ -112,8 +112,6 @@ class JPT(Factor):
 
 class CPT(Factor):
     def __init__(self, unconditioned_var, conditioned_vars, variable_domains):
-        if not len(conditioned_vars):
-
         super().__init__(list([unconditioned_var]), list([conditioned_vars]), variable_domains)
 
     @staticmethod
