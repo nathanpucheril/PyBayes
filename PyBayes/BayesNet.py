@@ -6,7 +6,7 @@
 
 from copy import deepcopy, copy
 import networkx as nx
-from ProbabilityTable import *
+from PyBayes.ProbabilityTable import *
 from warnings import warn
 
 class BayesNet(object):

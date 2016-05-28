@@ -1,6 +1,5 @@
 from PyBayes.BayesNet import BayesNet
-# from ProbabilityTable import *
-# from PyBayes.BayesNet
+from PyBayes.ProbabilityTable import *
 
 edges = [('x', 'y')]
 variables = ['x', 'y']
