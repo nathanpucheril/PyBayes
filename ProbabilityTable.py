@@ -138,6 +138,7 @@ dom1 = {"hi": ["friend", "parent"], "bye": ["friend", "parent"]}
 var2 = ["mom", "dad"]
 dom2 = {"mom": ["scold", "praise"], "dad": ["scold", "praise"]}
 
+
 cpt1 = CPT("hi", ["bye"], dom1)
 entries = cpt1.get_entries()
 # print(entries)
