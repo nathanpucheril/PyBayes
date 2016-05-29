@@ -19,9 +19,14 @@ class Factor(object):
 
     def __init__(self, unconditioned_vars, conditioned_vars, variable_domains):
         """ Creates a Factor object that encodes probabilities in a table """
+        unconditioned_vars = set(unconditioned_vars)
+        conditioned_vars = set(conditioned_vars)
+
         assert utils.islist_like(unconditioned_vars), "unconditioned_vars must be a list like structure"
         assert utils.islist_like(conditioned_vars), "conditioned_vars must be a list like structure"
         assert isinstance(variable_domains, dict), "variable_domains must be a dict"
+        assert all([isinstance(item, str) for item in unconditioned_vars])
+        assert unconditioned_vars.isdisjoint(conditioned_vars), "Unconditioned vars and Conditioned Vars must not have the same variable."
 
         self._domains = variable_domains
         self._variables = set(conditioned_vars) | set(unconditioned_vars)
