@@ -7,6 +7,7 @@ from itertools import product
 from copy import deepcopy, copy
 from warnings import warn
 import random
+from PyBayes import utils
 
 class Factor(object):
     """ Description:
@@ -18,6 +19,10 @@ class Factor(object):
 
     def __init__(self, unconditioned_vars, conditioned_vars, variable_domains):
         """ Creates a Factor object that encodes probabilities in a table """
+        assert utils.islist_like(unconditioned_vars), "unconditioned_vars must be a list like structure"
+        assert utils.islist_like(conditioned_vars), "conditioned_vars must be a list like structure"
+        assert isinstance(variable_domains, dict), "variable_domains must be a dict"
+
         self._domains = variable_domains
         self._variables = set(conditioned_vars) | set(unconditioned_vars)
         self._unconditioned = unconditioned_vars
@@ -139,31 +144,3 @@ class CPT(Factor):
 
 def variable_elimination(elimination_var, factors):
     pass
-
-var1 = ["hi", "bye"]
-dom1 = {"hi": ["friend", "parent"], "bye": ["friend", "parent"]}
-var2 = ["mom", "dad"]
-dom2 = {"mom": ["scold", "praise"], "dad": ["scold", "praise"]}
-
-cpt1 = CPT("hi", ["bye"], dom1)
-entries = cpt1.get_entrees()
-# print(entries)
-for entry in entries:
-    # print(dict(entry))
-    cpt1.set_probability(.2, **dict(entry))
-
-
-cpt2 = CPT("mom", ["dad"], dom2)
-entries = cpt2.get_entrees()
-# print(entries)
-count = .01
-for entry in entries:
-    # print(dict(entry))
-    cpt2.set_probability(.1 + count, **dict(entry))
-    count += .01
-
-print(cpt1)
-print(cpt2)
-
-jpt = CPT.cpts2jpt([cpt1, cpt2])
-print(jpt)
