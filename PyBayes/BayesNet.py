@@ -124,7 +124,24 @@ class BayesNet(object):
                     ext = "" if filepath.endswith(".png") else ".png"))
 
     def is_valid(self):
-        pass
+        """ Ensure factors within bayes net encode the same conditional
+            probabilities as the edges in the bayes net.
+        """
+
+        for (child, parent) in self._edges:
+            validEdge = False
+            for factor in self._cpts.values():
+                unconditioned_var = factor.get_unconditioned_vars()
+                conditioned_var = factor.get_conditioned_vars()
+
+                if len(conditioned_var) != 1 or len(unconditioned_var) != 1:
+                    continue
+                elif unconditioned_var.pop() == child and conditioned_var.pop() == parent:
+                    validEdge = True
+            if not validEdge:
+                return False
+
+        return True
 
 class DecisionNetwork(BayesNet):
 
